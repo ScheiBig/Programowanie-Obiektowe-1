@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cctype>
+#include <limits>
 
 Complex::Complex(double _re, double _im)
 {
@@ -38,9 +39,9 @@ std::istream& operator>>(std::istream& s, Complex& _c)
     case Parsing_Error::Real: throw std::invalid_argument("Invalid character in *real* part of complex number");
     case Parsing_Error::Imag: throw std::invalid_argument("Invalid character in *imaginary* part of complex number");
     case Parsing_Error::Char: throw std::invalid_argument("Invalid character for *i* constant");
-        default: break;
+    case Parsing_Error::None: break;
     }
-    
+
     _c.re = a;
     _c.im = b;
 
@@ -93,7 +94,10 @@ Complex operator /(const Complex& _c1, const Complex& _c2)
     double den = std::pow(_c2.re(), 2) + std::pow(_c2.im(), 2);
     if (den == 0)
     {
-        return Complex(INFINITY, INFINITY);
+        return Complex(
+            std::numeric_limits<double>::infinity(),
+            std::numeric_limits<double>::infinity()
+        );
     }
     return Complex(
         (_c1.re() * _c2.re() + _c1.im() * _c2.im()) / den,

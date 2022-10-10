@@ -6,6 +6,8 @@ namespace prop
     class val
     {
     public:
+        val() {}
+        val(T _v) { this->value = _v; }
         virtual ~val() {}
         // Property by-value getter
         virtual const T& operator()() const { return this->value; }
