@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include "property.hpp"
-
 class Complex
 {
 public:
@@ -21,8 +19,8 @@ public:
     friend Complex operator *(const Complex& _c1, const Complex& _c2);
     friend Complex operator /(const Complex& _c1, const Complex& _c2);
 
-    prop::var<double> re;
-    prop::var<double> im;
+    double re;
+    double im;
 };
 
 Complex operator""_i(long double _im);

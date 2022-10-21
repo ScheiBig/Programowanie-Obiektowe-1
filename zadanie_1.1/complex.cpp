@@ -14,7 +14,7 @@ Complex::~Complex() {}
 
 std::ostream& operator<<(std::ostream& _s, const Complex& _c)
 {
-    return _s << _c.re() << (_c.im() < 0 ? "" : "+") << _c.im() << "i";
+    return _s << _c.re << (_c.im < 0 ? "" : "+") << _c.im << "i";
 }
 
 enum Parsing_Error
@@ -60,38 +60,38 @@ Complex operator""_i(unsigned long long _im)
 
 Complex operator+(const double _re, const Complex& _c)
 {
-    return Complex(_re + _c.re(), _c.im());
+    return Complex(_re + _c.re, _c.im);
 }
 
 Complex operator-(const double _re, const Complex& _c)
 {
-    return Complex(_re - _c.re(), -_c.im());
+    return Complex(_re - _c.re, -_c.im);
 }
 
 Complex operator +(const Complex& _c1, const Complex& _c2)
 {
     return Complex(
-        _c1.re() + _c2.re(),
-        _c1.im() + _c2.im()
+        _c1.re + _c2.re,
+        _c1.im + _c2.im
     );
 }
 Complex operator -(const Complex& _c1, const Complex& _c2)
 {
     return Complex(
-        _c1.re() - _c2.re(),
-        _c1.im() - _c2.im()
+        _c1.re - _c2.re,
+        _c1.im - _c2.im
     );
 }
 Complex operator *(const Complex& _c1, const Complex& _c2)
 {
     return Complex(
-        _c1.re() * _c2.re() - _c1.im() * _c2.im(),
-        _c1.im() * _c2.re() + _c1.re() * _c2.im()
+        _c1.re * _c2.re - _c1.im * _c2.im,
+        _c1.im * _c2.re + _c1.re * _c2.im
     );
 }
 Complex operator /(const Complex& _c1, const Complex& _c2)
 {
-    double den = std::pow(_c2.re(), 2) + std::pow(_c2.im(), 2);
+    double den = std::pow(_c2.re, 2) + std::pow(_c2.im, 2);
     if (den == 0)
     {
         return Complex(
@@ -100,7 +100,7 @@ Complex operator /(const Complex& _c1, const Complex& _c2)
         );
     }
     return Complex(
-        (_c1.re() * _c2.re() + _c1.im() * _c2.im()) / den,
-        (_c1.im() * _c2.re() - _c1.re() * _c2.im()) / den
+        (_c1.re * _c2.re + _c1.im * _c2.im) / den,
+        (_c1.im * _c2.re - _c1.re * _c2.im) / den
     );
 }
