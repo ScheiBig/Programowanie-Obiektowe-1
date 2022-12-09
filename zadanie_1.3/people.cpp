@@ -85,7 +85,7 @@ std::ostream& operator <<(std::ostream& _s, const People& _p)
         << ANSI::reset;
 }
 
-People& People::add_person(const Person& _p)
+People& People::add_person(const Person& _p) noexcept(false)
 {
     if (this->locate_person(_p.PESEL) != -1)
     {
@@ -101,7 +101,7 @@ People& People::add_person(const Person& _p)
     return *this;
 }
 
-People& People::remove_person(unsigned long _PESEL)
+People& People::remove_person(unsigned long _PESEL) noexcept(false)
 {
     ssize_t i = this->locate_person(_PESEL);
     if (i < 0)

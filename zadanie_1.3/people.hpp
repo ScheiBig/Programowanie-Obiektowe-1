@@ -50,8 +50,8 @@ public:
     People& operator =(const People& _p);
     friend std::ostream& operator <<(std::ostream& _s, const People& _p);
 
-    People& add_person(const Person& _p);
-    People& remove_person(unsigned long _PESEL);
+    People& add_person(const Person& _p) noexcept(false);
+    People& remove_person(unsigned long _PESEL) noexcept(false);
 
 private:
     util::mem<Person> people;
