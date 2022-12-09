@@ -3,12 +3,7 @@
 #include <string>
 
 #include "complex.hpp"
-
-using std::cin;
-using std::cout;
-using std::string;
-
-static const char* nl = "\n";
+#include "util/ansi_text.hpp"
 
 int main()
 {
@@ -22,18 +17,42 @@ int main()
     // Complex c6 = 6 + 7_i;
     // Complex c7 = 8 - 9_i;
 
-    cout << "Enter a first number (A±Bi): ";
+    std::cout
+        << ANSI::cyan << "Enter a first number (A±Bi): "
+        << ANSI::reset;
     Complex c1;
-    cin >> c1;
+    std::cin >> c1;
 
-    cout << "Enter a second  number (A±Bi): ";
+    std::cout
+        << ANSI::b_cyan << "Enter a second  number (A±Bi): "
+        << ANSI::reset;
     Complex c2;
-    cin >> c2;
+    std::cin >> c2;
 
-    cout << c1 << " + " << c2 << " = " << c1 + c2 << nl;
-    cout << c1 << " - " << c2 << " = " << c1 - c2 << nl;
-    cout << c1 << " * " << c2 << " = " << c1 * c2 << nl;
-    cout << c1 << " / " << c2 << " = " << c1 / c2 << nl;
+    std::cout 
+        << c1 
+        << ANSI::b_black << " + " 
+        << ANSI::reset << c2 
+        << ANSI::b_black << " = " 
+        << ANSI::reset << c1 + c2 << util::nl;
+    std::cout 
+        << c1 
+        << ANSI::b_black << " - " 
+        << ANSI::reset << c2 
+        << ANSI::b_black << " = " 
+        << ANSI::reset << c1 - c2 << util::nl;
+    std::cout 
+        << c1 
+        << ANSI::b_black << " * " 
+        << ANSI::reset << c2 
+        << ANSI::b_black << " = " 
+        << ANSI::reset << c1 * c2 << util::nl;
+    std::cout 
+        << c1 
+        << ANSI::b_black << " / " 
+        << ANSI::reset << c2 
+        << ANSI::b_black << " = " 
+        << ANSI::reset << c1 / c2 << util::nl;
     
     return 0;
 }

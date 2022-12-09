@@ -9,7 +9,7 @@ public:
     ~Complex();
 
     friend std::ostream& operator<<(std::ostream& s, const Complex& _c);
-    friend std::istream& operator>>(std::istream& s, Complex& _c);
+    friend std::istream& operator>>(std::istream& s, Complex& _c) noexcept(false);
 
     friend Complex operator+(const double _re, const Complex& _c);
     friend Complex operator-(const double _re, const Complex& _c);
@@ -19,8 +19,8 @@ public:
     friend Complex operator *(const Complex& _c1, const Complex& _c2);
     friend Complex operator /(const Complex& _c1, const Complex& _c2);
 
-    double re;
-    double im;
+    double __re;
+    double __im;
 };
 
 Complex operator""_i(long double _im);

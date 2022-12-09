@@ -4,25 +4,21 @@
 #include <cctype>
 #include <limits>
 
-Complex::Complex(double _re, double _im)
-{
-    this->re = _re;
-    this->im = _im;
-}
+Complex::Complex(double _re, double _im): __re(_re), __im(_im) {}
 
 Complex::~Complex() {}
 
 std::ostream& operator<<(std::ostream& _s, const Complex& _c)
 {
-    return _s << _c.re << (_c.im < 0 ? "" : "+") << _c.im << "i";
+    return _s << _c.__re << (_c.__im < 0 ? "" : "+") << _c.__im << "i";
 }
 
-enum Parsing_Error
+enum struct Parsing_Error
 {
     Real, Imag, Char, None
 };
 
-std::istream& operator>>(std::istream& s, Complex& _c)
+std::istream& operator>>(std::istream& s, Complex& _c) noexcept(false)
 {
     double a;
     double b;
@@ -42,8 +38,8 @@ std::istream& operator>>(std::istream& s, Complex& _c)
     case Parsing_Error::None: break;
     }
 
-    _c.re = a;
-    _c.im = b;
+    _c.__re = a;
+    _c.__im = b;
 
     return s;
 }
@@ -60,38 +56,38 @@ Complex operator""_i(unsigned long long _im)
 
 Complex operator+(const double _re, const Complex& _c)
 {
-    return Complex(_re + _c.re, _c.im);
+    return Complex(_re + _c.__re, _c.__im);
 }
 
 Complex operator-(const double _re, const Complex& _c)
 {
-    return Complex(_re - _c.re, -_c.im);
+    return Complex(_re - _c.__re, -_c.__im);
 }
 
 Complex operator +(const Complex& _c1, const Complex& _c2)
 {
     return Complex(
-        _c1.re + _c2.re,
-        _c1.im + _c2.im
+        _c1.__re + _c2.__re,
+        _c1.__im + _c2.__im
     );
 }
 Complex operator -(const Complex& _c1, const Complex& _c2)
 {
     return Complex(
-        _c1.re - _c2.re,
-        _c1.im - _c2.im
+        _c1.__re - _c2.__re,
+        _c1.__im - _c2.__im
     );
 }
 Complex operator *(const Complex& _c1, const Complex& _c2)
 {
     return Complex(
-        _c1.re * _c2.re - _c1.im * _c2.im,
-        _c1.im * _c2.re + _c1.re * _c2.im
+        _c1.__re * _c2.__re - _c1.__im * _c2.__im,
+        _c1.__im * _c2.__re + _c1.__re * _c2.__im
     );
 }
 Complex operator /(const Complex& _c1, const Complex& _c2)
 {
-    double den = std::pow(_c2.re, 2) + std::pow(_c2.im, 2);
+    double den = std::pow(_c2.__re, 2) + std::pow(_c2.__im, 2);
     if (den == 0)
     {
         return Complex(
@@ -100,7 +96,7 @@ Complex operator /(const Complex& _c1, const Complex& _c2)
         );
     }
     return Complex(
-        (_c1.re * _c2.re + _c1.im * _c2.im) / den,
-        (_c1.im * _c2.re - _c1.re * _c2.im) / den
+        (_c1.__re * _c2.__re + _c1.__im * _c2.__im) / den,
+        (_c1.__im * _c2.__re - _c1.__re * _c2.__im) / den
     );
 }
