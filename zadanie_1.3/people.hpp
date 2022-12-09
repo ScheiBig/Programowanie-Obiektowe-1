@@ -5,14 +5,16 @@
 #include <vector>
 #include <functional>
 
-template<typename T>
-T* resize_buffer(T* _buf, size_t _n_old, size_t _n_new)
-{
-    T* new_buf = new T[_n_new];
-    std::copy_n(_buf, std::min(_n_old, _n_new), new_buf);
-    delete[] _buf;
-    return new_buf;
-}
+#include "util/memory.hpp"
+
+// template<typename T>
+// T* resize_buffer(T* _buf, size_t _n_old, size_t _n_new)
+// {
+//     T* new_buf = new T[_n_new];
+//     std::copy_n(_buf, std::min(_n_old, _n_new), new_buf);
+//     delete[] _buf;
+//     return new_buf;
+// }
 
 struct Person
 {
@@ -52,9 +54,8 @@ public:
     People& remove_person(unsigned long _PESEL);
 
 private:
-    Person* people;
+    util::mem<Person> people;
     size_t count;
-    size_t size;
 
     ssize_t locate_person(unsigned long _PESEL);
 };

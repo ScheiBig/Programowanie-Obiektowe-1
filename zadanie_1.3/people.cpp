@@ -1,54 +1,56 @@
 #include "people.hpp"
 
-#include "iterator.hpp"
+#include <string>
 
-using std::ostream;
-using std::string;
-using std::vector;
+#include "util/ansi_text.hpp"
 
-Person::Person() : name(""), surname(""), address(""), PESEL(0) {}
+Person::Person(): name(""), surname(""), address(""), PESEL(0) {}
 
 Person::Person(
-    string _name,
-    string _surname,
-    string _address,
+    std::string _name,
+    std::string _surname,
+    std::string _address,
     unsigned long _PESEL
-) : name(_name), surname(_surname), address(_address), PESEL(_PESEL)
+): name(_name), surname(_surname), address(_address), PESEL(_PESEL)
 {
 }
 
-ostream& operator <<(ostream& _s, const Person& _p)
+std::ostream& operator <<(std::ostream& _s, const Person& _p)
 {
-    return _s << "Person: { name: " << _p.name
-        << ", surname: " << _p.surname
-        << ", address: " << _p.address
-        << ", PESEL: " << _p.PESEL
-        << "}";
-};
+    return _s
+        << ANSI::b_black << "Person: { name: "
+        << ANSI::reset << _p.name
+        << ANSI::b_black << ", surname: "
+        << ANSI::reset << _p.surname
+        << ANSI::b_black << ", address: "
+        << ANSI::reset << _p.address
+        << ANSI::b_black << ", PESEL: "
+        << ANSI::reset << _p.PESEL
+        << ANSI::b_black << "}"
+        << ANSI::reset;
+}
 
-Person Person::parse_person(const vector<string>& _vec)
+Person Person::parse_person(const std::vector<std::string>& _vec)
 {
     return Person(_vec[0], _vec[1], _vec[2], stoul(_vec[3]));
 }
 
 People::People()
 {
-    this->people = new Person[INIT_COUNT];
-    this->size = INIT_COUNT;
+    this->people = util::mem<Person>::calloc(INIT_COUNT);
     this->count = 0u;
 }
 
 People::People(const People& _p)
 {
-    this->people = new Person[_p.size];
-    std::copy_n(_p.people, _p.count, this->people);
+    this->people = util::mem<Person>::calloc(_p.people.len());
+    std::copy_n(_p.people.ptr(), _p.count, this->people.ptr());
     this->count = _p.count;
-    this->size = _p.size;
 }
 
 People::~People()
 {
-    delete[] this->people;
+    this->people.free();
 }
 
 People& People::operator =(const People& _p)
@@ -56,30 +58,32 @@ People& People::operator =(const People& _p)
     if (this != &_p)
     {
 
-        Person* new_people = new Person[_p.size];
-        std::copy_n(_p.people, _p.count, new_people);
+        util::mem<Person> new_people = util::mem<Person>::calloc(_p.people.len());
+        std::copy_n(_p.people.ptr(), _p.count, new_people.ptr());
 
-        delete[] this->people;
+        this->people.free();
 
         this->people = new_people;
-
         this->count = _p.count;
-        this->size = _p.size;
     }
     return *this;
 }
 
-ostream& operator <<(ostream& _s, const People& _p)
+std::ostream& operator <<(std::ostream& _s, const People& _p)
 {
-    _s << "People: [\n";
+    _s
+        << ANSI::b_black << "People: ["
+        << ANSI::reset << util::nl;
 
-    for (Person p : iter::Each<Person>(_p.people, _p.count))
+    for (size_t i = 0; i < _p.count; i++)
     {
-        _s << "  " << p << "\n";
+        _s << "  " << _p.people[i] << util::nl;
     }
 
-    return _s << "]";
-};
+    return _s
+        << ANSI::b_black << "]"
+        << ANSI::reset;
+}
 
 People& People::add_person(const Person& _p)
 {
@@ -87,11 +91,10 @@ People& People::add_person(const Person& _p)
     {
         throw std::invalid_argument("Person with PESEL exist: " + std::to_string(_p.PESEL));
     }
-    
-    if (this->size == this->count)
+
+    if (this->people.len() == this->count)
     {
-        this->people = resize_buffer(this->people, this->size, this->size * RESIZE);
-        this->size *= RESIZE;
+        this->people.realloc(this->people.len() * RESIZE);
     }
     this->people[this->count++] = _p;
 

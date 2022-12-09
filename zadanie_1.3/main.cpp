@@ -4,112 +4,117 @@
 #include <string>
 
 #include "people.hpp"
-#include "utils.hpp"
+#include "util/split.hpp"
+#include "util/ansi_text.hpp"
 
-using std::cin;
-using std::cout;
-using std::cerr;
-using std::string;
-using std::ifstream;
-
-using util::nl;
-
-namespace menu
+enum struct menu
 {
-    enum options
-    {
-        ADD = 1, REMOVE, PRINT, CLOSE
-    };
-}
+    ADD = 1, REMOVE, PRINT, CLOSE = 0
+};
+
 
 int main()
 {
-    ifstream file("People.txt");
-
     People people;
-    string cur_line;
+    std::string cur_line;
 
-    while (std::getline(file, cur_line))
+    std::ifstream file("People.txt");
+    if (file.is_open())
     {
-        people.add_person(Person::parse_person(cur_line >>= util::split(", ")));
-    }
+        while (std::getline(file, cur_line))
+        {
+            people.add_person(Person::parse_person(cur_line >>= util::split(", ")));
+        }
 
-    cout << ANSI::b_cyan;
-    cout << "Loaded from file:" << nl << people << nl;
-    cout << ANSI::reset;
+        std::cout
+            << ANSI::b_blue << "Loaded from file:" << util::nl
+            << ANSI::reset << people << util::nl;
+
+        file.close();
+    }
 
     int choice;
     bool running = true;
     unsigned long l_buf;
     while (running)
     {
-        cout << ANSI::yellow;
-        cout << "(1: add person, 2: remove person, 3: print people, 4: exit)" << nl;
-        cout << ANSI::b_yellow;
-        cout << "What do you want do do next: ";
-        cout << ANSI::reset;
-        cin >> choice;
-        cin.ignore();
+        std::cout
+            << ANSI::b_magenta << "(1: add person, 2: remove person, 3: print people, 0: exit)" << util::nl
+            << ANSI::b_cyan << "What do you want do do next: "
+            << ANSI::reset;
+
+        std::cin >> choice;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), util::nl);
+
         switch (choice)
         {
-        case menu::ADD: {
+        case (int)menu::ADD: {
             Person pr;
-            cout << "Name: ";
-            std::getline(cin, pr.name);
-            
-            cout << "Surname: ";
-            std::getline(cin, pr.surname);
+            std::cout
+                << ANSI::b_cyan << "Name: "
+                << ANSI::reset;
+            std::getline(std::cin, pr.name);
 
-            cout << "Address: ";
-            std::getline(cin, pr.address);
+            std::cout
+                << ANSI::b_cyan << "Surname: "
+                << ANSI::reset;
+            std::getline(std::cin, pr.surname);
 
-            cout << "PESEL: ";
-            cin >> pr.PESEL;
+            std::cout
+                << ANSI::b_cyan << "Address: "
+                << ANSI::reset;
+            std::getline(std::cin, pr.address);
+
+            std::cout
+                << ANSI::b_cyan << "PESEL: "
+                << ANSI::reset;
+            std::cin >> pr.PESEL;
             try
             {
                 people.add_person(pr);
             }
             catch (const std::invalid_argument& e)
             {
-                cerr << ANSI::red;
-                cerr << e.what() << nl;
-                cerr << ANSI::reset;
+                std::cerr
+                    << ANSI::red << e.what() << util::nl
+                    << ANSI::reset;
             }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), util::nl);
             break;
         }
-        case menu::REMOVE: {
-            cout << ANSI::b_yellow;
-            cout << "PESEL of person to remove: ";
-            cout << ANSI::reset;
-            cin >> l_buf;
-            
+        case (int)menu::REMOVE: {
+            std::cout
+                << ANSI::b_cyan << "PESEL of person to remove: "
+                << ANSI::reset;
+            std::cin >> l_buf;
+
             try
             {
                 people.remove_person(l_buf);
             }
             catch (const std::invalid_argument& e)
             {
-                cerr << ANSI::red;
-                cerr << e.what() << nl;
-                cerr << ANSI::reset;
+                std::cerr
+                    << ANSI::b_red << e.what() << util::nl
+                    << ANSI::reset;
             }
 
             break;
         }
-        case menu::PRINT: {
-            cout << ANSI::b_green;
-            cout << people << util::nl;
-            cout << ANSI::reset;
+        case (int)menu::PRINT: {
+            std::cout
+                << ANSI::b_green << "Currently stored: "
+                << ANSI::reset << people << util::nl;
             break;
         }
-        case menu::CLOSE: {
+        case (int)menu::CLOSE: {
             running = false;
             break;
         }
         default: {
-            cerr << ANSI::red;
-            cerr << "Unknown option (" << choice << ")" << nl;
-            cerr << ANSI::reset;
+            std::cerr
+                << ANSI::b_red << "Unknown option (" << choice << ")" << util::nl
+                << ANSI::reset;
             break;
         }
         }
