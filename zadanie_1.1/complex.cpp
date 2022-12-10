@@ -4,38 +4,38 @@
 #include <cctype>
 #include <limits>
 
-Complex::Complex(double _re, double _im): __re(_re), __im(_im) {}
+complex::complex(double _re, double _im): __re(_re), __im(_im) {}
 
-Complex::~Complex() {}
+complex::~complex() {}
 
-std::ostream& operator<<(std::ostream& _s, const Complex& _c)
+std::ostream& operator<<(std::ostream& _s, complex const& _c)
 {
     return _s << _c.__re << (_c.__im < 0 ? "" : "+") << _c.__im << "i";
 }
 
-enum struct Parsing_Error
+enum struct parsing_error
 {
     Real, Imag, Char, None
 };
 
-std::istream& operator>>(std::istream& s, Complex& _c) noexcept(false)
+std::istream& operator>>(std::istream& s, complex& _c) noexcept(false)
 {
     double a;
     double b;
     char i;
 
-    enum Parsing_Error err = Parsing_Error::None;
+    enum parsing_error err = parsing_error::None;
 
-    if (!(s >> a)) err = Parsing_Error::Real;
-    if (!(s >> b)) err = Parsing_Error::Imag;
-    if (!(s >> i) || std::tolower(i) != 'i') err = Parsing_Error::Char;
+    if (!(s >> a)) err = parsing_error::Real;
+    if (!(s >> b)) err = parsing_error::Imag;
+    if (!(s >> i) || std::tolower(i) != 'i') err = parsing_error::Char;
 
     switch (err)
     {
-    case Parsing_Error::Real: throw std::invalid_argument("Invalid character in *real* part of complex number");
-    case Parsing_Error::Imag: throw std::invalid_argument("Invalid character in *imaginary* part of complex number");
-    case Parsing_Error::Char: throw std::invalid_argument("Invalid character for *i* constant");
-    case Parsing_Error::None: break;
+    case parsing_error::Real: throw std::invalid_argument("Invalid character in *real* part of complex number");
+    case parsing_error::Imag: throw std::invalid_argument("Invalid character in *imaginary* part of complex number");
+    case parsing_error::Char: throw std::invalid_argument("Invalid character for *i* constant");
+    case parsing_error::None: break;
     }
 
     _c.__re = a;
@@ -44,58 +44,58 @@ std::istream& operator>>(std::istream& s, Complex& _c) noexcept(false)
     return s;
 }
 
-Complex operator""_i(long double _im)
+complex operator""_i(long double _im)
 {
-    return Complex(0, static_cast<double>(_im));
+    return complex(0, static_cast<double>(_im));
 }
 
-Complex operator""_i(unsigned long long _im)
+complex operator""_i(unsigned long long _im)
 {
-    return Complex(0, static_cast<double>(_im));
+    return complex(0, static_cast<double>(_im));
 }
 
-Complex operator+(const double _re, const Complex& _c)
+complex operator+(double const _re, complex const& _c)
 {
-    return Complex(_re + _c.__re, _c.__im);
+    return complex(_re + _c.__re, _c.__im);
 }
 
-Complex operator-(const double _re, const Complex& _c)
+complex operator-(double const _re, complex const& _c)
 {
-    return Complex(_re - _c.__re, -_c.__im);
+    return complex(_re - _c.__re, -_c.__im);
 }
 
-Complex operator +(const Complex& _c1, const Complex& _c2)
+complex operator +(complex const& _c1, complex const& _c2)
 {
-    return Complex(
+    return complex(
         _c1.__re + _c2.__re,
         _c1.__im + _c2.__im
     );
 }
-Complex operator -(const Complex& _c1, const Complex& _c2)
+complex operator -(complex const& _c1, complex const& _c2)
 {
-    return Complex(
+    return complex(
         _c1.__re - _c2.__re,
         _c1.__im - _c2.__im
     );
 }
-Complex operator *(const Complex& _c1, const Complex& _c2)
+complex operator *(complex const& _c1, complex const& _c2)
 {
-    return Complex(
+    return complex(
         _c1.__re * _c2.__re - _c1.__im * _c2.__im,
         _c1.__im * _c2.__re + _c1.__re * _c2.__im
     );
 }
-Complex operator /(const Complex& _c1, const Complex& _c2)
+complex operator /(complex const& _c1, complex const& _c2)
 {
     double den = std::pow(_c2.__re, 2) + std::pow(_c2.__im, 2);
     if (den == 0)
     {
-        return Complex(
+        return complex(
             std::numeric_limits<double>::infinity(),
             std::numeric_limits<double>::infinity()
         );
     }
-    return Complex(
+    return complex(
         (_c1.__re * _c2.__re + _c1.__im * _c2.__im) / den,
         (_c1.__im * _c2.__re - _c1.__re * _c2.__im) / den
     );

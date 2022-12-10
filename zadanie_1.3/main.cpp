@@ -9,13 +9,16 @@
 
 enum struct menu
 {
-    ADD = 1, REMOVE, PRINT, CLOSE = 0
+    Add = 1,
+    Remove,
+    Print,
+    Close = 0
 };
 
 
 int main()
 {
-    People people;
+    people people;
     std::string cur_line;
 
     std::ifstream file("People.txt");
@@ -23,7 +26,7 @@ int main()
     {
         while (std::getline(file, cur_line))
         {
-            people.add_person(Person::parse_person(cur_line >>= util::split(", ")));
+            people.add_person(person::parse_person(cur_line >>= util::split(", ")));
         }
 
         std::cout
@@ -48,32 +51,32 @@ int main()
 
         switch (choice)
         {
-        case (int)menu::ADD: {
-            Person pr;
+        case (int)menu::Add: {
+            person pr;
             std::cout
                 << ANSI::b_cyan << "Name: "
                 << ANSI::reset;
-            std::getline(std::cin, pr.name);
+            std::getline(std::cin, pr.__name);
 
             std::cout
                 << ANSI::b_cyan << "Surname: "
                 << ANSI::reset;
-            std::getline(std::cin, pr.surname);
+            std::getline(std::cin, pr.__surname);
 
             std::cout
                 << ANSI::b_cyan << "Address: "
                 << ANSI::reset;
-            std::getline(std::cin, pr.address);
+            std::getline(std::cin, pr.__address);
 
             std::cout
                 << ANSI::b_cyan << "PESEL: "
                 << ANSI::reset;
-            std::cin >> pr.PESEL;
+            std::cin >> pr.__PESEL;
             try
             {
                 people.add_person(pr);
             }
-            catch (const std::invalid_argument& e)
+            catch (std::invalid_argument const& e)
             {
                 std::cerr
                     << ANSI::red << e.what() << util::nl
@@ -82,7 +85,7 @@ int main()
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), util::nl);
             break;
         }
-        case (int)menu::REMOVE: {
+        case (int)menu::Remove: {
             std::cout
                 << ANSI::b_cyan << "PESEL of person to remove: "
                 << ANSI::reset;
@@ -92,7 +95,7 @@ int main()
             {
                 people.remove_person(l_buf);
             }
-            catch (const std::invalid_argument& e)
+            catch (std::invalid_argument const& e)
             {
                 std::cerr
                     << ANSI::b_red << e.what() << util::nl
@@ -101,13 +104,13 @@ int main()
 
             break;
         }
-        case (int)menu::PRINT: {
+        case (int)menu::Print: {
             std::cout
                 << ANSI::b_green << "Currently stored: "
                 << ANSI::reset << people << util::nl;
             break;
         }
-        case (int)menu::CLOSE: {
+        case (int)menu::Close: {
             running = false;
             break;
         }

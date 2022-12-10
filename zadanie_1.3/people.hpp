@@ -6,56 +6,48 @@
 #include <functional>
 
 #include "util/memory.hpp"
-
-// template<typename T>
-// T* resize_buffer(T* _buf, size_t _n_old, size_t _n_new)
-// {
-//     T* new_buf = new T[_n_new];
-//     std::copy_n(_buf, std::min(_n_old, _n_new), new_buf);
-//     delete[] _buf;
-//     return new_buf;
-// }
-
-struct Person
+struct person
 {
-    std::string name;
-    std::string surname;
-    std::string address;
-    unsigned long PESEL;
+    std::string __name;
+    std::string __surname;
+    std::string __address;
+    unsigned long __PESEL;
 
-    Person();
+    person();
     
-    Person( 
+    person( 
         std::string _name,
         std::string _surname,
         std::string _address,
         unsigned long _PESEL
     );
 
-    friend std::ostream& operator <<(std::ostream& _s, const Person& _p);
+    friend std::ostream& operator <<(std::ostream& _s, person const& _p);
 
-    static Person parse_person(const std::vector<std::string>& _vec);
+    static person parse_person(std::vector<std::string> const& _vec);
 };
 
 #define INIT_COUNT 2
 #define RESIZE 2
 
-class People
+class people
 {
 public:
-    People();
-    People(const People& _p);
-    ~People();
+    people();
+    people(people const& _p);
+    ~people();
 
-    People& operator =(const People& _p);
-    friend std::ostream& operator <<(std::ostream& _s, const People& _p);
+    people& operator =(people const& _p);
+    friend std::ostream& operator <<(std::ostream& _s, people const& _p);
 
-    People& add_person(const Person& _p) noexcept(false);
-    People& remove_person(unsigned long _PESEL) noexcept(false);
+    /// @throw std::invalid_argument
+    people& add_person(person const& _p) noexcept(false);
+    /// @throw std::invalid_argument
+    people& remove_person(unsigned long _PESEL) noexcept(false);
 
 private:
-    util::mem<Person> people;
-    size_t count;
+    util::mem<person> __people;
+    size_t __count;
 
-    ssize_t locate_person(unsigned long _PESEL);
+    ssize_t locate_person(unsigned long _PESEL) const;
 };

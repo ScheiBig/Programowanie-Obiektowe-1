@@ -32,7 +32,7 @@ namespace util
 
         bool operator!=(ptr_iterator _other) const { return !(*this == _other); }
 
-        T& operator*() const { return this->__ptr; }
+        T& operator*() const { return *(this->__ptr); }
     };
 
     template<typename T>

@@ -4,80 +4,80 @@
 
 #include "util/ansi_text.hpp"
 
-Person::Person(): name(""), surname(""), address(""), PESEL(0) {}
+person::person(): __name(""), __surname(""), __address(""), __PESEL(0) {}
 
-Person::Person(
+person::person(
     std::string _name,
     std::string _surname,
     std::string _address,
     unsigned long _PESEL
-): name(_name), surname(_surname), address(_address), PESEL(_PESEL)
+): __name(_name), __surname(_surname), __address(_address), __PESEL(_PESEL)
 {
 }
 
-std::ostream& operator <<(std::ostream& _s, const Person& _p)
+std::ostream& operator <<(std::ostream& _s, person const& _p)
 {
     return _s
-        << ANSI::b_black << "Person: { name: "
-        << ANSI::reset << _p.name
+        << ANSI::b_black << "person: { name: "
+        << ANSI::reset << _p.__name
         << ANSI::b_black << ", surname: "
-        << ANSI::reset << _p.surname
+        << ANSI::reset << _p.__surname
         << ANSI::b_black << ", address: "
-        << ANSI::reset << _p.address
+        << ANSI::reset << _p.__address
         << ANSI::b_black << ", PESEL: "
-        << ANSI::reset << _p.PESEL
+        << ANSI::reset << _p.__PESEL
         << ANSI::b_black << "}"
         << ANSI::reset;
 }
 
-Person Person::parse_person(const std::vector<std::string>& _vec)
+person person::parse_person(std::vector<std::string> const& _vec)
 {
-    return Person(_vec[0], _vec[1], _vec[2], stoul(_vec[3]));
+    return person(_vec[0], _vec[1], _vec[2], stoul(_vec[3]));
 }
 
-People::People()
+people::people()
 {
-    this->people = util::mem<Person>::calloc(INIT_COUNT);
-    this->count = 0u;
+    this->__people = util::mem<person>::calloc(INIT_COUNT);
+    this->__count = 0u;
 }
 
-People::People(const People& _p)
+people::people(people const& _p)
 {
-    this->people = util::mem<Person>::calloc(_p.people.len());
-    std::copy_n(_p.people.ptr(), _p.count, this->people.ptr());
-    this->count = _p.count;
+    this->__people = util::mem<person>::calloc(_p.__people.len());
+    std::copy_n(_p.__people.ptr(), _p.__count, this->__people.ptr());
+    this->__count = _p.__count;
 }
 
-People::~People()
+people::~people()
 {
-    this->people.free();
+    this->__people.free();
 }
 
-People& People::operator =(const People& _p)
+people& people::operator =(people const& _p)
 {
     if (this != &_p)
     {
 
-        util::mem<Person> new_people = util::mem<Person>::calloc(_p.people.len());
-        std::copy_n(_p.people.ptr(), _p.count, new_people.ptr());
+        util::mem<person> new_people = util::mem<person>::calloc(_p.__people.len());
+        std::copy_n(_p.__people.ptr(), _p.__count, new_people.ptr());
 
-        this->people.free();
+        this->__people.free();
 
-        this->people = new_people;
-        this->count = _p.count;
+        this->__people = new_people;
+        this->__count = _p.__count;
     }
     return *this;
 }
 
-std::ostream& operator <<(std::ostream& _s, const People& _p)
+std::ostream& operator <<(std::ostream& _s, people const& _p)
 {
     _s
-        << ANSI::b_black << "People: ["
+        << ANSI::b_black << "people: ["
         << ANSI::reset << util::nl;
 
-    for (size_t i = 0; i < _p.count; i++)
+    for (size_t i = 0; i < _p.__count; i++)
     {
-        _s << "  " << _p.people[i] << util::nl;
+        _s << "  " << _p.__people[i] << util::nl;
     }
 
     return _s
@@ -85,23 +85,23 @@ std::ostream& operator <<(std::ostream& _s, const People& _p)
         << ANSI::reset;
 }
 
-People& People::add_person(const Person& _p) noexcept(false)
+people& people::add_person(person const& _p) noexcept(false)
 {
-    if (this->locate_person(_p.PESEL) != -1)
+    if (this->locate_person(_p.__PESEL) != -1)
     {
-        throw std::invalid_argument("Person with PESEL exist: " + std::to_string(_p.PESEL));
+        throw std::invalid_argument("person with PESEL exist: " + std::to_string(_p.__PESEL));
     }
 
-    if (this->people.len() == this->count)
+    if (this->__people.len() == this->__count)
     {
-        this->people.realloc(this->people.len() * RESIZE);
+        this->__people.realloc(this->__people.len() * RESIZE);
     }
-    this->people[this->count++] = _p;
+    this->__people[this->__count++] = _p;
 
     return *this;
 }
 
-People& People::remove_person(unsigned long _PESEL) noexcept(false)
+people& people::remove_person(unsigned long _PESEL) noexcept(false)
 {
     ssize_t i = this->locate_person(_PESEL);
     if (i < 0)
@@ -109,20 +109,20 @@ People& People::remove_person(unsigned long _PESEL) noexcept(false)
         throw std::invalid_argument("Not found: " + std::to_string(_PESEL));
     }
 
-    for (size_t j = static_cast<size_t>(i); j < this->count - 1; j++)
+    for (size_t j = static_cast<size_t>(i); j < this->__count - 1; j++)
     {
-        this->people[j] = this->people[j + 1];
+        this->__people[j] = this->__people[j + 1];
     }
-    this->count--;
+    this->__count--;
 
     return *this;
 }
 
-ssize_t People::locate_person(unsigned long _PESEL)
+ssize_t people::locate_person(unsigned long _PESEL) const
 {
-    for (size_t i = 0; i < this->count; i++)
+    for (size_t i = 0; i < this->__count; i++)
     {
-        if (this->people[i].PESEL == _PESEL)
+        if (this->__people[i].__PESEL == _PESEL)
         {
             return static_cast<ssize_t>(i);
         }

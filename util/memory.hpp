@@ -10,6 +10,8 @@
 #include <functional>
 #include <cstring>
 
+#include "./iterator.hpp"
+
 namespace util
 {
 
@@ -19,7 +21,7 @@ namespace util
      * @tparam T Type of elements
      * @tparam _n_elem Number of elements
      */
-    template<typename T, std::size_t _n_elem>
+    template<typename T, size_t _n_elem>
     class temp_alloc final
     {
     public:
@@ -48,7 +50,7 @@ namespace util
         }
 
         /// @return Number of elements int this memory array
-        std::size_t length()
+        size_t length()
         {
             return _n_elem;
         }
@@ -67,9 +69,11 @@ namespace util
     {
     private:
         T* __ptr;
-        std::size_t __len;
-        mem(T* _ptr, std::size_t _len) : __ptr(_ptr), __len(_len) {}
+        size_t __len;
+        mem(T* _ptr, std::size_t _len): __ptr(_ptr), __len(_len) {}
     public:
+
+        mem(): __ptr(nullptr), __len(0) {}
 
         /**
          * @brief Wraps existing allocated memory
@@ -77,7 +81,7 @@ namespace util
          * @param _ptr pointer to memory
          * @param _n_elem number of elements
          */
-        static mem<T> wrap(T* _ptr, std::size_t _n_elem)
+        static mem<T> wrap(T* _ptr, size_t _n_elem)
         {
             return mem<T>{ _ptr, _n_elem };
         }
@@ -87,7 +91,7 @@ namespace util
          *
          * @param _n_elem number of elements
          */
-        static mem<T> calloc(std::size_t _n_elem)
+        static mem<T> calloc(size_t _n_elem)
         {
             return mem<T>{ (T*)std::calloc(_n_elem, sizeof(T)), _n_elem };
         }
@@ -98,7 +102,7 @@ namespace util
          */
         static mem<char> strdup(const char* _cstr)
         {
-            std::size_t s = std::strlen(_cstr) + 1;
+            size_t s = std::strlen(_cstr) + 1;
             mem<char> m = mem<char>::calloc(s);
             std::memcpy(m.ptr(), _cstr, sizeof(char) * s);
             return m;
@@ -110,9 +114,9 @@ namespace util
          * @throw `std::bad_alloc` if reallocation fails;
          *        `std::bad_function_call` if this memory is already deallocated;
          */
-        void realloc(std::size_t _n_elem)
+        void realloc(size_t _n_elem)
         {
-            if (this->__ptr != nullptr) { throw std::bad_function_call(); }
+            if (this->__ptr == nullptr) { throw std::bad_function_call(); }
             void* new_mem = std::realloc(__ptr, _n_elem * sizeof(T));
             if (new_mem == nullptr) { throw std::bad_alloc(); }
             this->__ptr = (T*)new_mem;
@@ -133,18 +137,68 @@ namespace util
             return true;
         }
 
-        T* ptr() { return this->__ptr; }
-        std::size_t len() { return this->__len; }
+        T* ptr() const { return this->__ptr; }
+        size_t len() const { return this->__len; }
+
+        /**
+         * @return iterator to the first element of this array
+         */
+        ptr_iterator<T> begin() { return ptr_iterator{ this->__ptr }; }
+
+        /**
+         * @return iterator to the next-after last element of this array
+         */
+        ptr_iterator<T> end() { return ptr_iterator{ this->__ptr + this->__len }; }
+
+        /**
+         * @return iterator to the first element of this array
+         */
+        cptr_iterator<T> begin() const { return cptr_iterator{ this->__ptr }; }
+
+        /**
+         * @return iterator to the next-after last element of this array
+         */
+        cptr_iterator<T> end() const { return cptr_iterator{ this->__ptr + this->__len }; }
+
+        T& operator[] (size_t _index) noexcept(false)
+        {
+            if (_index > this->__len)
+            {
+                throw std::out_of_range(
+                    "Index ["
+                    + std::to_string(_index)
+                    + "] out of bounds (0.."
+                    + std::to_string(this->__len)
+                    + ")"
+                );
+            }
+            return this->__ptr[_index];
+        }
+
+        T const& operator[] (std::size_t _index) const noexcept(false)
+        {
+            if (_index > this->__len)
+            {
+                throw std::out_of_range(
+                    "Index ["
+                    + std::to_string(_index)
+                    + "] out of bounds (0.."
+                    + std::to_string(this->__len)
+                    + ")"
+                );
+            }
+            return this->__ptr[_index];
+        }
     };
 
     template<typename T>
-    T* t_calloc(std::size_t _n_elem)
+    T* t_calloc(size_t _n_elem)
     {
         return (T*)std::calloc(_n_elem, sizeof(T));
     }
 }
 
-constexpr std::size_t operator ""_z(unsigned long long _n)
+constexpr size_t operator ""_z(unsigned long long _n)
 {
-    return (std::size_t)_n;
+    return (size_t)_n;
 }
