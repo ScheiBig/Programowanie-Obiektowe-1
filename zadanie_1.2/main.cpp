@@ -1,78 +1,131 @@
-// #include <iostream>
-// #include <fstream>
-// #include <limits>
-// #include <string>
+#include <iostream>
+#include <fstream>
+#include <limits>
+#include <string>
 
-// #include "unique_list.hpp"
-// #include "utils.hpp"
-
-// using std::cin;
-// using std::cout;
-// using std::cerr;
-// using std::string;
-// using std::ifstream;
-
-// using util::nl;
+#include "unique_list.hpp"
+#include "util/ansi_text.hpp"
 
 
-// template<>
-// UniqueList<string> UniqueList<string>::sorted()
-// {
-//     UniqueList new_list;
+enum struct menu
+{
+    Add = 1,
+    Remove,
+    Print,
+    Sort,
+    Close = 0
+};
 
-//     string** elements = new string* [this->size];
+static int sorting_comparator(std::string const& _a, std::string const& _b)
+{
+    size_t s = _a.length() - _b.length();
+    if (s != 0) { return s; }
+    return _a.compare(_b);
+}
 
-//     size_t i = 0;
-//     for (UniqueList<string>::Node* n = this->head; n != nullptr; n = n->next)
-//     {
-//         elements[i++] = &(n->value);
-//     }
+int main()
+{
 
-//     std::sort(elements, elements + this->size, [](string* a, string* b) { return *a < *b; });
+    std::cout << std::string("2").compare("13");
+    std::cout << std::string("2").compare("21");
+    
+    unique_list<std::string> list;
+    std::string cur_val;
+    std::string prev_val;
 
-//     for (i = 0; i < this->size; i++)
-//     {
-//         new_list.add_element(*(elements[i]));
-//     }
+    std::ifstream file("UniqueList.txt");
+    if (file.is_open())
+    {
+        while (std::getline(file, cur_val))
+        {
+            list.add_element(cur_val);
+        }
 
-//     delete[] elements;
+        std::cout
+            << ANSI::b_blue << "Loaded from file:" << util::nl
+            << ANSI::reset << list << util::nl;
 
-//     return new_list;
-// }
+        file.close();
+    }
 
+    int choice;
+    bool running = true;
+    while (running)
+    {
+        std::cout
+            << ANSI::b_magenta << "(1: add value, 2: remove value, 3: print all alues, 4: sort values, 0: exit)" << util::nl
+            << ANSI::b_cyan << "What do you want do do next: "
+            << ANSI::reset;
 
-// namespace menu
-// {
-//     enum options
-//     {
-//         ADD = 1, REMOVE, PRINT, SORT, CLOSE
-//     };
-// }
+        std::cin >> choice;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), util::nl);
+        switch (choice)
+        {
+        case (int)menu::Add: {
+            std::cout
+                << ANSI::b_cyan << "Value: "
+                << ANSI::reset;
+            std::getline(std::cin, cur_val);
 
-// int main()
-// {
-//     UniqueList<string> list;
-//     list.add_element("3")
-//         .add_element("1", "3")
-//         .add_element("4", "1")
-//         .add_element("2", "4");
+            std::cout
+                << ANSI::b_cyan << "Value to add after: "
+                << ANSI::reset;
+            std::getline(std::cin, prev_val);
 
-//     cout << list << nl;
+            try
+            {
+                list.add_element(cur_val, prev_val);
+            }
+            catch (std::invalid_argument const& e)
+            {
+                std::cerr
+                    << ANSI::b_red << e.what() << util::nl
+                    << ANSI::reset;
+            }
+            break;
+        }
+        case (int)menu::Remove: {
+            std::cout
+                << ANSI::b_cyan << "Value to remove: "
+                << ANSI::reset;
+            std::getline(std::cin, cur_val);
+            try
+            {
+                list.remove_element(cur_val);
+            }
+            catch (std::invalid_argument const& e)
+            {
+                std::cerr
+                    << ANSI::b_red << e.what() << util::nl
+                    << ANSI::reset;
+            }
+            break;
+        }
+        case (int)menu::Print: {
+            std::cout
+                << ANSI::b_green << "Currently stored: "
+                << ANSI::reset << list << util::nl;
+            break;
+        }
+        case (int)menu::Sort: {
+            std::cout
+                << ANSI::b_green << "After sorting: "
+                << ANSI::reset << list.sort(sorting_comparator) << util::nl;
+            break;
+        }
+        case (int)menu::Close: {
+            running = false;
+            break;
+        }
+        default: {
+            std::cerr
+                << ANSI::b_red << "Unknown option (" << choice << ")" << util::nl
+                << ANSI::reset;
+            break;
+        }
+        }
+    }
 
-//     UniqueList<string> sorted = list.sorted();
-
-//     cout << sorted;
-
-//     list.remove_element("2")
-//         .remove_element("4");
-
-//     cout << list << nl;
-
-//     UniqueList<string> other(list);
-
-//     list = sorted;
-
-//     cout << list << nl;
-//     cout << other << nl;
-// }
+    return 0;
+}
 

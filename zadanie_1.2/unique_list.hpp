@@ -1,171 +1,157 @@
 #pragma once
 
 #include <stdexcept>
-#include <string>
 #include <iostream>
-#include <sstream>
-#include <array>
-#include <algorithm>
 
-#include "utils.hpp"
+#include "util/ansi_text.hpp"
+#include "util/bformat.hpp"
 
 template<typename T>
-class UniqueList
+class unique_list
 {
 private:
-    struct Node
+    struct node
     {
-        Node* prev;
-        Node* next;
-        T value;
+        node* __prev;
+        node* __next;
+        T __value;
     };
 public:
-    UniqueList();
 
-    UniqueList(const UniqueList<T>& _from);
+    unique_list();
 
-    UniqueList<T>& operator =(const UniqueList<T>& _from);
+    unique_list(const unique_list<T>& _from);
 
-    ~UniqueList();
+    unique_list<T>& operator =(const unique_list<T>& _from);
 
-    UniqueList& add_element(T _id);
+    ~unique_list();
 
-    UniqueList& add_element(T _id, T _prev_id);
+    unique_list& add_element(T _id);
 
-    UniqueList& remove_element(T _id);
+    /// @throw std::invalid_argument 
+    unique_list& add_element(T _id, T _prev_id) noexcept(false);
 
-    T& pop_element(T _id);
+    unique_list& remove_element(T _id);
 
-    UniqueList sorted();
+    /// @throw std::invalid_argument
+    T& pop_element(T _id) noexcept(false);
 
-    friend std::ostream& operator <<(std::ostream& _s, const UniqueList& _l)
-    {
-        _s << "UniqueList: [" << util::nl;
-        for (const typename UniqueList<T>::Node* cur = _l.head; cur != nullptr; cur = cur->next)
-        {
-            _s << "  " << cur->value << util::nl;
-        }
-        return _s << "]";
-    }
+    unique_list& sort(int (*_comp)(T const& _a, T const& _b));
+
+    template<typename U>
+    friend std::ostream& operator <<(std::ostream& _s, const unique_list<U>& _l);
 
 private:
-    Node* head;
-    Node* tail;
-    size_t size;
+    node* __head;
+    node* __tail;
+    size_t __size;
 
-    Node* find_element(T _id);
+    node* find_element(T _id);
 };
 
 
 
 
 template<typename T>
-UniqueList<T>::UniqueList()
-{
-    this->head = nullptr;
-    this->tail = nullptr;
-    this->size = 0;
-}
+unique_list<T>::unique_list():__head(nullptr), __tail(nullptr), __size(0) {}
 
 template<typename T>
-UniqueList<T>::UniqueList(const UniqueList<T>& _from)
+unique_list<T>::unique_list(const unique_list<T>& _from) : unique_list()
 {
-    this->head = nullptr;
-    this->tail = nullptr;
-    this->size = 0;
-    for (Node* n{ _from.head }; n != nullptr; n = n->next)
+    for (unique_list<T>::node* n = _from.__head; n != nullptr; n = n->__next)
     {
-        this->add_element(n->value);
+        this->add_element(n->__value);
     }
 }
 
 template<typename T>
-UniqueList<T>& UniqueList<T>::operator=(const UniqueList<T>& _from)
+unique_list<T>& unique_list<T>::operator=(const unique_list<T>& _from)
 {
-    for (Node* n{ _from.head }; n != nullptr; n = n->next)
+    this->~unique_list();
+    this->__size = 0;
+    
+    for (unique_list<T>::node* n = _from.__head; n != nullptr; n = n->__next)
     {
-        this->add_element(n->value);
+        this->add_element(n->__value);
     }
     return *this;
 }
 
 template<typename T>
-UniqueList<T>::~UniqueList()
+unique_list<T>::~unique_list()
 {
-    switch (this->size)
+    switch (this->__size)
     {
     case 0: break;
     case 1: {
-        delete this->head;
+        delete this->__head;
         break;
     }
     default: {
-        for (Node* pn{ this->tail->prev }; pn != nullptr; pn = pn->prev)
+        for (node* pn{ this->__tail->__prev }; pn != nullptr; pn = pn->__prev)
         {
-            delete pn->next;
+            delete pn->__next;
         }
-        delete this->head;
+        delete this->__head;
     }
     }
 }
 
 template<typename T>
-UniqueList<T>& UniqueList<T>::add_element(T _id)
+unique_list<T>& unique_list<T>::add_element(T _id)
 {
-    if (this->size == 0)
+    if (this->__size == 0)
     {
-        this->head = this->tail = new Node{ nullptr, nullptr, _id };
-        this->size++;
+        this->__head = this->__tail = new node{ nullptr, nullptr, _id };
+        this->__size++;
 
         return *this;
     }
 
-    Node* new_element{ new Node{ this->tail, nullptr, _id } };
-    this->tail->next = new_element;
-    this->tail = new_element;
-    this->size++;
+    node* new_element{ new node{ this->__tail, nullptr, _id } };
+    this->__tail->__next = new_element;
+    this->__tail = new_element;
+    this->__size++;
 
     return *this;
 }
 
 template<typename T>
-UniqueList<T>& UniqueList<T>::add_element(T _id, T _prev_id)
+unique_list<T>& unique_list<T>::add_element(T _id, T _prev_id) noexcept(false)
 {
-    if (this->size == 0)
+    if (this->__size == 0)
     {
-        std::stringstream error_message;
-        error_message << "Cannot add element (" << _id <<
-            ") after previous one (" << _prev_id << "): list is empty";
-        throw std::invalid_argument(error_message.str());
+        throw std::invalid_argument(util::bformat(
+            "Cannot add element ($) after previous one ($): list is empty", _id, _prev_id
+        ));
     }
 
-    Node* prev{ this->find_element(_prev_id) };
+    node* prev{ this->find_element(_prev_id) };
     if (prev == nullptr)
     {
-        std::stringstream error_message;
-        error_message << "Cannot add element (" << _id <<
-            ") after previous one (" << _prev_id << "): no such element";
-        throw std::invalid_argument(error_message.str());
+        throw std::invalid_argument(util::bformat(
+            "Cannot add element ($) after previous one ($): no such element", _id, _prev_id
+        ));
     }
 
-    Node* new_element{ new Node{ prev, nullptr, _id } };
+    node* new_element{ new node{ prev, nullptr, _id } };
 
-    if (prev->next != nullptr)
+    if (prev->__next != nullptr)
     {
-        Node* next{ prev->next };
-        new_element->next = next;
-        next->prev = new_element;
+        node* next{ prev->__next };
+        new_element->__next = next;
+        next->__prev = new_element;
     }
-    else { this->tail = new_element; }
+    else { this->__tail = new_element; }
 
-    prev->next = new_element;
-    this->size++;
+    prev->__next = new_element;
+    this->__size++;
 
     return *this;
 }
 
 template<typename T>
-UniqueList<T>& UniqueList<T>::remove_element(T _id)
+unique_list<T>& unique_list<T>::remove_element(T _id)
 {
     this->pop_element(_id);
 
@@ -173,69 +159,84 @@ UniqueList<T>& UniqueList<T>::remove_element(T _id)
 }
 
 template<typename T>
-T& UniqueList<T>::pop_element(T _id)
+T& unique_list<T>::pop_element(T _id) noexcept(false)
 {
-    if (this->size == 0)
+    if (this->__size == 0)
     {
-        std::stringstream error_message;
-        error_message << "Cannot remove element: list is empty" << _id;
-        throw std::invalid_argument(error_message.str());
+        throw std::invalid_argument(util::bformat(
+            "Cannot remove element ($): list is empty", _id
+        ));
     }
-    Node* n{ this->find_element(_id) };
-    if (n->value == _id)
+    node* n{ this->find_element(_id) };
+    if (n->__value == _id)
     {
-        Node* next{ n->next };
-        Node* prev{ n->prev };
-        if (next != nullptr) { next->prev = prev; }
-        if (prev != nullptr) { prev->next = next; }
+        node* next{ n->__next };
+        node* prev{ n->__prev };
+        if (next != nullptr) { next->__prev = prev; }
+        if (prev != nullptr) { prev->__next = next; }
 
-        if (this->head == n) { this->head = next; }
-        if (this->tail == n) { this->tail = prev; }
-        T& v{ n->value };
+        if (this->__head == n) { this->__head = next; }
+        if (this->__tail == n) { this->__tail = prev; }
+        T& v{ n->__value };
 
         delete n;
 
+        this->__size--;
+        
         return v;
     }
 
-    std::stringstream error_message;
-    error_message << "Cannot remove element: no such element"
-        << _id;
-    throw std::invalid_argument(error_message.str());
+    throw std::invalid_argument(util::bformat(
+        "Cannot remove element ($): no such element", _id
+    ));
 }
 
 template<typename T>
-UniqueList<T> UniqueList<T>::sorted()
+unique_list<T>& unique_list<T>::sort(int (*_comp)(T const& _a, T const& _b))
 {
-    UniqueList new_list;
+    if (this->__size <= 1) { return *this; }
 
-    T** elements{ new T * [this->size] };
-
-    size_t i{};
-    for (Node* n{ this->head }; n != nullptr; n = n->next)
+    int sw = 1;
+    for (unique_list<T>::node* x = this->__tail; x != nullptr && sw != 0; x = x->__prev)
     {
-        elements[i++] = &(n->value);
+        for (unique_list<T>::node* y = this->__head; y->__next != x->__next; y = y->__next)
+        {
+            if (_comp(y->__value, y->__next->__value) > 0)
+            {
+                std::swap(y->__value, y->__next->__value);
+                sw++;
+            }
+        }
     }
 
-    std::sort(elements, elements + this->size, [](T* a, T* b) { return *a < *b; });
-
-    for (i = 0; i < this->size; i++)
-    {
-        new_list.add_element(*(elements[i]));
-    }
-
-    delete[] elements;
-
-    return new_list;
+    return *this;
 }
 
 template<typename T>
-typename UniqueList<T>::Node* UniqueList<T>::find_element(T _id)
+typename unique_list<T>::node* unique_list<T>::find_element(T _id)
 {
-    for (Node* n{ this->head }; n != nullptr; n = n->next)
+    for (node* n{ this->__head }; n != nullptr; n = n->__next)
     {
-        if (n->value == _id) { return n; }
+        if (n->__value == _id) { return n; }
     }
 
     return nullptr;
+}
+
+template<typename U>
+std::ostream& operator<< (std::ostream& _s, unique_list<U> const& _l)
+{
+    _s
+        << ANSI::b_black << "unique_list: ["
+        << ANSI::reset << util::nl;
+    for (const typename unique_list<U>::node* cur = _l.__head; cur != nullptr; cur = cur->__next)
+    {
+        _s
+            << ANSI::reset << "  " << cur->__value
+            << ANSI::b_black << ","
+            << ANSI::reset << util::nl;
+    }
+    return _s
+        << ANSI::b_black << "]"
+        << ANSI::reset;
 }
