@@ -24,4 +24,5 @@ public:
     klass(int _integer);
     klass(char _character);
     klass(double _floating_point);
+    klass(klass const& _original);
 };

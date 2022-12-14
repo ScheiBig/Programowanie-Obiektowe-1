@@ -73,3 +73,13 @@ klass::klass(double _floating_point)
         << ANSI::reset << _floating_point << util::nl;
     this->floating_point() = _floating_point;
 }
+
+klass::klass(klass const& _original)
+{
+    std::cout
+        << ANSI::b_magenta << "Overloaded constructor called - copy constructor"
+        << ANSI::reset << util::nl;
+    this->character() = _original.character();
+    this->integer() = _original.integer();
+    this->floating_point() = _original.floating_point();
+}
