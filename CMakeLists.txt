@@ -13,10 +13,48 @@ add_compile_options(
     "-fdiagnostics-color=always"
 )
 
-add_executable(Programowanie_Obiektowe_1
-    # workspace/main.cpp
-    # workspace/list.cpp
-    # workspace/people.cpp
-    zadanie_1.3/main.cpp
-    zadanie_1.3/people.cpp
-)
+# # Exercise 1.1
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_1.1/main.cpp
+#     exercise_1.1/complex.cpp
+# )
+
+# # Exercise 1.2
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_1.2/main.cpp
+# )
+
+# # Exercise 1.3
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_1.3/main.cpp
+#     exercise_1.3/people.cpp
+# )
+
+# # Exercise 2.4
+# add_executable(Programowanie_Obiektowe_1
+# exercise_2.1/main.cpp
+# exercise_2.1/euc_vector.cpp
+# )
+
+# # Exercise 2.2
+# add_executable(Programowanie_Obiektowe_1
+# exercise_2.2/main.cpp
+# exercise_2.2/klass.cpp
+# )
+
+# # Exercise 2.3
+# add_executable(Programowanie_Obiektowe_1
+# exercise_2.3/main.cpp
+# exercise_2.3/klass.cpp
+# )
+
+# # Exercise 2.4
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_2.4/main.cpp
+#     exercise_2.4/klass.cpp
+# )
+
+# # Exercise 3.1
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_3.1/main.cpp
+# )

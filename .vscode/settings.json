@@ -50,7 +50,8 @@
         "concepts": "cpp",
         "cstring": "cpp",
         "numbers": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "ctime": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }
