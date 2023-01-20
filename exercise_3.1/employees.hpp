@@ -1,11 +1,14 @@
 #pragma once
 
 #include <string>
+#include <ostream>
 #include <ctime>
+
+class manager;
 
 class employee
 {
-private:
+protected:
     std::string __name;
     std::string __surname;
     unsigned long __NIP;
@@ -23,16 +26,32 @@ public:
         std::string _departament
     );
 
-    virtual std::string to_string();
+    virtual std::ostream& print_to(std::ostream& _s);
+
+    friend class manager;
 };
 
 class manager: public employee
 {
-private:
-    size_t _number_of_subordinates;
-    std::string _management_type;
-    unsigned int _supplement_ptc;
+protected:
+    size_t __number_of_subordinates;
+    std::string __management_type;
+    unsigned int __supplement_ptc;
 public:
-    std::string to_string() override;
-    void add_subordinate(employee const& _subordinate);
+
+    manager(
+        size_t _number_of_subordinates,
+        std::string _management_type,
+        unsigned int _supplement_ptc,
+        std::string _name,
+        std::string _surname,
+        unsigned long _NIP,
+        tm _date_of_employment,
+        unsigned int _wage,
+        std::string _departament
+    );
+
+    void add_subordinate(employee& _subordinate);
+
+    std::ostream& print_to(std::ostream& _s) override;
 };
