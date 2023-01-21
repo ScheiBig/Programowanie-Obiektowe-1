@@ -82,3 +82,9 @@ add_compile_options(
 # add_executable(Programowanie_Obiektowe_1
 #     exercise_5.1/main.cpp
 # )
+
+# Exercise 6.1
+add_executable(Programowanie_Obiektowe_1
+    exercise_6.1/main.cpp
+    exercise_6.1/nums.cpp
+)

@@ -7,7 +7,7 @@
 int main()
 {
     std::cout << "First 13 elements: ";
-    for (size_t i = 0; i < 13; i++)
+    for (size_t i{ 0 }; i < 13; i++)
     {
         std::cout << fib<int>::value_no(i) << " ";
     }
@@ -19,7 +19,7 @@ int main()
 
 
     std::cout << "Random 15 numbers: \n";
-    for (size_t i = 0; i < 15; i++)
+    for (size_t i{ 0 }; i < 15; i++)
     {
         int num = range(gen);
         bool is_val = fib<int>::is_value(num);
