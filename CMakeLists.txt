@@ -90,10 +90,10 @@ add_compile_options(
 # )
 
 # Exercise 7.1
-add_executable(Programowanie_Obiektowe_1
-    exercise_7.1/main.cpp
-    exercise_7.1/capacitor.cpp
-)
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_7.1/main.cpp
+#     exercise_7.1/capacitor.cpp
+# )
 
 # Exercise 8.1
 # add_executable(Programowanie_Obiektowe_1
