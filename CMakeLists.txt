@@ -77,3 +77,8 @@ add_compile_options(
 #     exercise_4.1/main.cpp
 #     exercise_4.1/solid.cpp
 # )
+
+# Exercise 5.1
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_5.1/main.cpp
+# )
