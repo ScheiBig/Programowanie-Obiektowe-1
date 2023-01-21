@@ -2,9 +2,11 @@
 
 int main()
 {
-    matrix1010 m;
+    matrix m;
 
-    m(6, 9) = 420;
+    m(6, 9) = 420; // ok
+
+    m(11, -2) = 8; // throws
 
     return 0;
 }

@@ -106,6 +106,12 @@ add_compile_options(
 #     exercise_9.1/matrix1010.cpp
 # )
 
+# Exercise 9.2
+add_executable(Programowanie_Obiektowe_1
+    exercise_9.2/main.cpp
+    exercise_9.2/matrix.cpp
+)
+
 # Exercise 10
 # add_executable(Programowanie_Obiektowe_1
 #     exercise_10/main.cpp
