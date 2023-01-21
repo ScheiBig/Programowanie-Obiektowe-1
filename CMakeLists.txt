@@ -7,8 +7,8 @@ add_compile_options(
     "-pedantic"
     "-Wall"
     "-Wno-old-style-cast"
-    "-Wno-class-memaccess"
-    "-fmax-errors=16"
+    # "-Wno-class-memaccess"
+    # "-fmax-errors=16"
     "-ggdb"
     "-fdiagnostics-color=always"
 )
@@ -79,8 +79,8 @@ add_compile_options(
 # )
 
 # Exercise 4.1
-add_executable(Programowanie_Obiektowe_1
-    exercise_4.2/main.cpp
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_4.2/main.cpp
 # )
 
 # Exercise 5.1
