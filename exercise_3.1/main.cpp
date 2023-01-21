@@ -13,6 +13,7 @@ int main()
 
     std::tm ago{ today };
     ago.tm_year -= 5;
+    std::mktime(&ago);
 
     manager bob_doe{ 3, "junior supervisor", 15, "Robert", "Doe", 147258369, ago, 6000, "leg" };
 

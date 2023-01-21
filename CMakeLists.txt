@@ -57,4 +57,11 @@ add_compile_options(
 # # Exercise 3.1
 # add_executable(Programowanie_Obiektowe_1
 #     exercise_3.1/main.cpp
+#     exercise_3.1/employees.cpp
+# )
+
+# Exercise 3.2
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_3.2/main.cpp
+#     exercise_3.2/people.cpp
 # )
