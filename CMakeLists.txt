@@ -89,6 +89,11 @@ add_compile_options(
 #     exercise_6.1/nums.cpp
 # )
 
+# Exercise 6.2
+add_executable(Programowanie_Obiektowe_1
+    exercise_6.2/main.cpp
+)
+
 # Exercise 7.1
 # add_executable(Programowanie_Obiektowe_1
 #     exercise_7.1/main.cpp
@@ -100,6 +105,12 @@ add_compile_options(
 #     exercise_8.1/main.cpp
 # )
 
+# Exercise 8.2
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_8.2/main.cpp
+#     exercise_8.2/matrix.cpp
+# )
+
 # Exercise 9.1
 # add_executable(Programowanie_Obiektowe_1
 #     exercise_9.1/main.cpp
@@ -107,10 +118,10 @@ add_compile_options(
 # )
 
 # Exercise 9.2
-add_executable(Programowanie_Obiektowe_1
-    exercise_9.2/main.cpp
-    exercise_9.2/matrix.cpp
-)
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_9.2/main.cpp
+#     exercise_9.2/matrix.cpp
+# )
 
 # Exercise 10
 # add_executable(Programowanie_Obiektowe_1
