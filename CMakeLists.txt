@@ -71,3 +71,9 @@ add_compile_options(
 #     exercise_3.3/main.cpp
 #     exercise_3.3/resistor.cpp
 # )
+
+# Exercise 4.1
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_4.1/main.cpp
+#     exercise_4.1/solid.cpp
+# )
