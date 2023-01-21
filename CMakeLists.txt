@@ -78,6 +78,11 @@ add_compile_options(
 #     exercise_4.1/solid.cpp
 # )
 
+# Exercise 4.1
+add_executable(Programowanie_Obiektowe_1
+    exercise_4.2/main.cpp
+# )
+
 # Exercise 5.1
 # add_executable(Programowanie_Obiektowe_1
 #     exercise_5.1/main.cpp
@@ -90,9 +95,9 @@ add_compile_options(
 # )
 
 # Exercise 6.2
-add_executable(Programowanie_Obiektowe_1
-    exercise_6.2/main.cpp
-)
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_6.2/main.cpp
+# )
 
 # Exercise 7.1
 # add_executable(Programowanie_Obiektowe_1
