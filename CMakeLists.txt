@@ -84,7 +84,28 @@ add_compile_options(
 # )
 
 # Exercise 6.1
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_6.1/main.cpp
+#     exercise_6.1/nums.cpp
+# )
+
+# Exercise 7.1
 add_executable(Programowanie_Obiektowe_1
-    exercise_6.1/main.cpp
-    exercise_6.1/nums.cpp
+    exercise_7.1/main.cpp
+    exercise_7.1/capacitor.cpp
 )
+
+# Exercise 8.1
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_8.1/main.cpp
+# )
+
+# Exercise 9.1
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_9.1/main.cpp
+# )
+
+# Exercise 10
+# add_executable(Programowanie_Obiektowe_1
+#     exercise_10/main.cpp
+# )

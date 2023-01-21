@@ -21,12 +21,12 @@ std::ostream& operator<< (std::ostream& _s, resistor const& _r)
 
 resistor operator+ (resistor const& _r1, resistor const& _r2)
 {
-    return _r1.r() + _r2.r();
+    return resistor(_r1.r() + _r2.r());
 }
 
 resistor operator* (resistor const& _r1, resistor const& _r2)
 {
-    return (_r1.r() * _r2.r())
+    return resistor((_r1.r() * _r2.r())
         /
-        (_r1.r() + _r2.r());
+        (_r1.r() + _r2.r()));
 }
